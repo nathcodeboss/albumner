@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ALBUMNER</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Titan+One&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+
+    <style>
+        :root {
+            --azul: #202C60;
+            --azul2: #8FACCA;
+            --creme: #F5F3DC;
+            --verde: #B6CF7B;
+            --verde2: #4C7026;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Titan One", cursive;
+        }
+
+        body {
+            height: 100vh;
+            overflow: hidden;
+            background: var(--creme);
+        }
+
+        /* ===== FUNDO ===== */
+        .bg {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        /* glow suave */
+        .glow {
+            position: absolute;
+            width: 750px;
+            height: 750px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle,
+                    rgba(143, 172, 202, 0.18),
+                    rgba(182, 207, 123, 0.12),
+                    transparent 65%);
+            filter: blur(35px);
+        }
+
+        /* ===== LINHAS ESPORTIVAS ===== */
+        .line {
+            position: absolute;
+            height: 10px;
+            border-radius: 20px;
+            opacity: 0.75;
+            animation: move 4s linear infinite;
+        }
+
+        .line.blue {
+            background: var(--azul2);
+        }
+
+        .line.green {
+            background: var(--verde);
+        }
+
+        .line.light {
+            background: rgba(32, 44, 96, 0.08);
+        }
+
+        @keyframes move {
+            from {
+                transform: translateX(-120%);
+            }
+
+            to {
+                transform: translateX(120%);
+            }
+        }
+
+        /* ===== PARTICULAS ===== */
+        .particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--azul2);
+            opacity: 0.4;
+            animation: float 6s linear infinite;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(110vh);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 1;
+            }
+
+            to {
+                transform: translateY(-10vh);
+                opacity: 0;
+            }
+        }
+
+        /* ===== UI ===== */
+        .container {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--azul);
+        }
+
+        .logo {
+            font-size: 42px;
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        .sub {
+            margin-top: 8px;
+            font-size: 16px;
+            opacity: 0;
+            color: rgba(32, 44, 96, 0.75);
+            transform: translateY(8px);
+        }
+
+        /* LOADING */
+        .loading {
+            margin-top: 25px;
+            width: 220px;
+            height: 8px;
+            background: rgba(32, 44, 96, 0.12);
+            border-radius: 50px;
+            overflow: hidden;
+        }
+
+        .bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--azul2), var(--verde));
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg">
+        <div class="glow"></div>
+    </div>
+
+    <div class="container">
+
+        <div class="logo">ALBUMNER</div>
+
+        <div class="sub">Progresso da coleção</div>
+
+        <div class="loading">
+            <div class="bar" id="bar"></div>
+        </div>
+
+    </div>
+
+    <script>
+
+        /* ===== ENTRADA CLEAN (STARTUP REVEAL) ===== */
+
+        gsap.to(".logo", {
+            opacity: 1,
+            scale: 1,
+            duration: 1,
+            delay: 0.4
+        });
+
+        gsap.to(".sub", {
+            opacity: 0.8,
+            y: 0,
+            duration: 1,
+            delay: 0.9
+        });
+
+        gsap.to("#bar", {
+            width: "100%",
+            duration: 5.5,
+            ease: "power2.inOut"
+        });
+
+        /* saída */
+        setTimeout(() => {
+            gsap.to("body", {
+                opacity: 0,
+                duration: 0.6,
+                onComplete: () => {
+                    window.location.href = "app.html";
+                }
+            });
+        }, 6000);
+
+        /* ===== LINHAS ESPORTIVAS ===== */
+
+        const colors = ["blue", "green", "light"];
+
+        let maxLines = 40;
+        let count = 0;
+
+        function createLine() {
+            const line = document.createElement("div");
+
+            line.classList.add("line", colors[Math.floor(Math.random() * colors.length)]);
+
+            line.style.top = Math.random() * 100 + "vh";
+            line.style.width = (250 + Math.random() * 400) + "px";
+            line.style.left = "-300px";
+            line.style.animationDuration = (2.5 + Math.random() * 2.5) + "s";
+            line.style.opacity = Math.random() * 0.6 + 0.25;
+
+            document.querySelector(".bg").appendChild(line);
+        }
+
+        let interval = setInterval(() => {
+            if (count < maxLines) {
+                createLine();
+                count++;
+            } else {
+                clearInterval(interval);
+            }
+        }, 120);
+
+        /* partículas */
+        for (let i = 0; i < 25; i++) {
+            const p = document.createElement("div");
+            p.classList.add("particle");
+
+            p.style.left = Math.random() * 100 + "vw";
+            p.style.animationDuration = (4 + Math.random() * 5) + "s";
+
+            document.body.appendChild(p);
+        }
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Álbum Dia dos Pais</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Titan+One&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --azul: #202C60;
+            --azul2: #8FACCA;
+            --creme: #F5F3DC;
+            --verde: #B6CF7B;
+            --verde2: #4C7026;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Titan One", cursive;
+        }
+
+        body {
+            background: var(--creme);
+            color: var(--azul);
+        }
+
+        h1 {
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .header h1 {
+            font-size: 2.4rem;
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            font-size: 1.15rem;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            letter-spacing: 1px;
+        }
+
+        #sectionTitle {
+            font-size: 17px;
+            opacity: 0.8;
+            text-align: center;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .header {
+            background: var(--azul);
+            color: var(--creme);
+            text-align: center;
+            padding: 28px;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 18px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 22px;
+            padding: 18px;
+            margin-top: 18px;
+            box-shadow: 0 6px 0 var(--azul2);
+        }
+
+        /* INPUT */
+        .input-box {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        input {
+            flex: 1;
+            padding: 16px;
+            font-size: 16px;
+            border-radius: 14px;
+            border: 1px solid var(--azul2);
+            text-align: center;
+        }
+
+        button {
+            padding: 14px 18px;
+            font-size: 15px;
+            border: none;
+            border-radius: 12px;
+            background: var(--verde);
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: var(--verde2);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        /* NAV */
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        /* TABLE */
+        .table {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 6px;
+        }
+
+        .cell {
+            font-size: 14px;
+            padding: 10px 0;
+            text-align: center;
+            border-radius: 8px;
+            border: 1px solid var(--azul2);
+            background: white;
+            opacity: 0.6;
+            cursor: pointer;
+        }
+
+        .cell.done {
+            background: var(--verde);
+            color: white;
+            opacity: 1;
+        }
+
+        /* PROGRESS BAR */
+        .progress {
+            width: 100%;
+            height: 14px;
+            border-radius: 50px;
+            background: rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        #bar {
+            height: 100%;
+            width: 0%;
+            background: var(--verde);
+            transition: width 0.3s ease;
+        }
+
+        .info {
+            margin-top: 6px;
+            font-size: 16px;
+        }
+
+        /* RESET BTN */
+        #resetBtn {
+            position: fixed;
+            bottom: 14px;
+            right: 14px;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: none;
+            background: white;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        /* MODAL */
+        #overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.35);
+        }
+
+        .modal {
+            background: white;
+            padding: 18px;
+            border-radius: 18px;
+            width: 90%;
+            max-width: 320px;
+        }
+
+        .modal input {
+            width: 100%;
+            margin-top: 10px;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--azul2);
+        }
+
+        #modalMsg {
+            margin-top: 8px;
+            font-size: 12px;
+            color: red;
+            min-height: 16px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .modal button {
+            flex: 1;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .modal {
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #eee;
+            color: #333;
+            padding: 0;
+            font-size: 14px;
+        }
+
+        .close-modal:hover {
+            background: #ddd;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-confirm {
+            background: var(--verde2);
+            color: white;
+        }
+
+        .progress-title {
+            margin-bottom: 14px;
+        }
+
+        @media (max-width: 768px) {
+
+            .header h1 {
+                font-size: 2.4rem;
+            }
+
+            .header p {
+                font-size: 1.1rem;
+            }
+
+            .card h2 {
+                font-size: 1.25rem;
+            }
+
+            #sectionTitle {
+                font-size: 16px;
+            }
+
+            .cell {
+                font-size: 14px;
+                padding: 10px 0;
+            }
+
+            .info {
+                font-size: 16px;
+            }
+
+            input,
+            button {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>Álbum do Dia dos Pais</h1>
+        <p>Acompanhe o progresso da sua coleção em tempo real</p>
+    </div>
+
+    <div class="container">
+
+        <!-- INPUT -->
+        <div class="card">
+            <h2>Adicionar Figurinha</h2>
+
+            <div class="input-box">
+                <input id="input" maxlength="3" placeholder="001" inputmode="numeric" pattern="[0-9]*"> <button
+                    onclick="add()">Adicionar</button>
+            </div>
+
+            <div id="addMsg" style="margin-top:10px; min-height:20px;"></div>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="card">
+            <h2 class="progress-title">Progresso</h2>
+
+            <div class="progress">
+                <div id="bar"></div>
+            </div>
+
+            <div class="info" id="count"></div>
+            <div class="info" id="percent"></div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="card">
+
+            <div class="nav">
+                <button onclick="prevSection()">◀</button>
+                <div id="sectionTitle"></div>
+                <button onclick="nextSection()">▶</button>
+            </div>
+
+            <div id="table"></div>
+
+        </div>
+
+    </div>
+
+    <!-- RESET BTN -->
+    <button id="resetBtn" onclick="openReset()">🗑️</button>
+
+    <!-- MODAL -->
+    <div id="overlay">
+        <div class="modal">
+
+            <button class="close-modal" onclick="closeModal()">✕</button>
+
+            <h3>Confirmação</h3>
+
+            <input type="text" id="senha" placeholder="Digite: ALBUMNER">
+            <input type="text" id="word">
+
+            <div id="modalMsg"></div>
+
+            <div class="modal-buttons">
+                <button class="btn-confirm" onclick="confirmAction()">Confirmar</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+
+        const TOTAL = 210;
+
+        let album = new Set(JSON.parse(localStorage.getItem("album")) || []);
+        let currentSection = 0;
+        let targetRemove = null;
+
+        const sections = [
+            { name: "INTRODUÇÃO", start: 1, end: 1 },
+            { name: "FAMÍLIA", start: 2, end: 51 },
+
+            { name: "VIAGENS - FOZ DO IGUAÇU (Nov/24)", start: 52, end: 67 },
+            { name: "VIAGENS - GRAMADO/CANELA (Out/25)", start: 68, end: 83 },
+            { name: "VIAGENS - GRAMADO/CANELA (Fev/25)", start: 84, end: 131 },
+            { name: "VIAGENS - FOZ DO IGUAÇU (Fev/26)", start: 132, end: 147 },
+
+            { name: "MOMENTOS", start: 148, end: 181 },
+            { name: "PAPI", start: 182, end: 209 },
+            { name: "ENCERRAMENTO", start: 210, end: 210 }
+        ];
+
+        function getSection() {
+            return sections[currentSection];
+        }
+
+        function save() {
+            localStorage.setItem("album", JSON.stringify([...album]));
+        }
+
+        /* ADD */
+        function add() {
+
+            const input = document.getElementById("input");
+            const msg = document.getElementById("addMsg");
+
+            const n = parseInt(input.value.replace(/^0+/, ""));
+
+            msg.innerText = "";
+
+            if (isNaN(n) || n < 1 || n > TOTAL) {
+                msg.style.color = "#d62828";
+                msg.innerText = `Número inválido. Informe entre 001 e ${String(TOTAL).padStart(3, "0")}.`; return;
+            }
+
+            if (album.has(n)) {
+                msg.style.color = "#e6a700";
+                msg.innerText = `A figurinha ${String(n).padStart(3, "0")} já está cadastrada na sua coleção.`;
+                input.value = "";
+                return;
+            }
+
+            album.add(n);
+
+            msg.style.color = "#2a9d42";
+            msg.innerText = `Figurinha ${String(n).padStart(3, "0")} cadastrada com sucesso!`;
+
+            save();
+            update();
+
+            input.value = "";
+        }
+
+        /* RESET BUTTON */
+        function openReset() {
+            targetRemove = "reset";
+
+            document.getElementById("word").placeholder = "Digite: REINICIAR";
+            document.getElementById("overlay").style.display = "flex";
+
+            document.getElementById("senha").value = "";
+            document.getElementById("word").value = "";
+            document.getElementById("modalMsg").innerText = "";
+        }
+
+        /* MODAL */
+        function closeModal() {
+            document.getElementById("overlay").style.display = "none";
+            document.getElementById("senha").value = "";
+            document.getElementById("word").value = "";
+            document.getElementById("modalMsg").innerText = "";
+            targetRemove = null;
+        }
+
+        function confirmAction() {
+
+            const senha = document.getElementById("senha").value.trim().toUpperCase();
+            const word = document.getElementById("word").value.trim();
+            const msg = document.getElementById("modalMsg");
+
+            msg.innerText = "";
+
+            /* RESET */
+            if (targetRemove === "reset") {
+
+                if (senha !== "ALBUMNER") {
+                    msg.innerText = "Senha incorreta.";
+                    return;
+                }
+
+                if (word !== "REINICIAR") {
+                    msg.innerText = "Digite REINICIAR para confirmar.";
+                    return;
+                }
+
+                album.clear();
+            }
+
+            /* REMOVER FIGURINHA */
+            if (typeof targetRemove === "number") {
+
+                if (senha !== "ALBUMNER") {
+                    msg.innerText = "Senha de remoção incorreta.";
+                    return;
+                }
+
+                if (word !== "REMOVER") {
+                    msg.innerText = "Digite REMOVER para confirmar.";
+                    return;
+                }
+
+                album.delete(targetRemove);
+            }
+
+            save();
+            update();
+            closeModal();
+        }
+
+        /* NAV */
+        function nextSection() {
+            if (currentSection < sections.length - 1) {
+                currentSection++;
+                update();
+            }
+        }
+
+        function prevSection() {
+            if (currentSection > 0) {
+                currentSection--;
+                update();
+            }
+        }
+
+        /* PROGRESS */
+        function update() {
+
+            const percent = Math.round((album.size / TOTAL) * 100);
+
+            document.getElementById("count").innerText =
+                `${album.size} / ${TOTAL}`;
+
+            document.getElementById("percent").innerText =
+                percent + "% completo";
+
+            document.getElementById("bar").style.width =
+                percent + "%";
+
+            render();
+            updateSectionProgress();
+        }
+
+        /* TABLE */
+        function render() {
+
+            const el = document.getElementById("table");
+            el.innerHTML = "";
+
+            const section = getSection();
+            const title = section.name;
+            const start = section.start;
+            const end = section.end;
+
+            const grid = document.createElement("div");
+            grid.className = "table";
+
+            for (let i = start; i <= end; i++) {
+
+                const cell = document.createElement("div");
+                cell.className = "cell";
+
+                if (album.has(i)) cell.classList.add("done");
+
+                cell.innerText = String(i).padStart(3, "0");
+
+                cell.onclick = () => {
+                    if (album.has(i)) {
+                        targetRemove = i;
+
+                        document.getElementById("word").placeholder =
+                            "Digite: REMOVER";
+
+                        document.getElementById("overlay").style.display = "flex";
+                    }
+                };
+
+                grid.appendChild(cell);
+            }
+
+            el.appendChild(grid);
+        }
+
+        update();
+
+        function updateSectionProgress() {
+            const section = getSection();
+            const title = section.name;
+            const start = section.start;
+            const end = section.end;
+
+            let total = 0;
+            let done = 0;
+
+            for (let i = start; i <= end; i++) {
+                total++;
+                if (album.has(i)) done++;
+            }
+
+            document.getElementById("sectionTitle").innerText =
+                `${title} (${done}/${total})`;
+        }
+
+    </script>
+
+</body>
+
+</html>
