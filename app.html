@@ -269,48 +269,60 @@
 
         @media (max-width: 768px) {
 
+            .container {
+                padding: 14px;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .header {
+                padding: 24px;
+            }
+
             .header h1 {
-                font-size: 2.3rem;
+                font-size: 2.1rem;
             }
 
             .header p {
-                font-size: 1rem;
+                font-size: 0.95rem;
             }
 
             .card h2 {
-                font-size: 1.15rem;
+                font-size: 1.05rem;
             }
 
             #sectionTitle {
-                font-size: 15px;
+                font-size: 14px;
             }
 
             .info {
-                font-size: 14px;
+                font-size: 13px;
             }
 
             .cell {
-                font-size: 13px;
-                padding: 8px 0;
+                font-size: 12px;
+                padding: 7px 0;
             }
 
             input {
-                font-size: 15px;
-                padding: 15px;
+                font-size: 14px;
+                padding: 14px;
             }
 
             button {
-                font-size: 14px;
-                padding: 13px 16px;
+                font-size: 13px;
+                padding: 12px 14px;
             }
 
             .progress {
-                height: 16px;
+                height: 14px;
             }
 
             #resetBtn {
-                width: 48px;
-                height: 48px;
+                width: 42px;
+                height: 42px;
             }
         }
     </style>
@@ -396,17 +408,18 @@
         let targetRemove = null;
 
         const sections = [
-            { name: "INTRODUÇÃO", start: 1, end: 1 },
+            { name: "ESPECIAL 001", start: 1, end: 1 },
             { name: "FAMÍLIA", start: 2, end: 51 },
 
-            { name: "VIAGENS - FOZ DO IGUAÇU (Nov/24)", start: 52, end: 67 },
-            { name: "VIAGENS - GRAMADO/CANELA (Out/25)", start: 68, end: 83 },
-            { name: "VIAGENS - GRAMADO/CANELA (Fev/25)", start: 84, end: 131 },
-            { name: "VIAGENS - FOZ DO IGUAÇU (Fev/26)", start: 132, end: 147 },
+            { name: "VIAGENS - FOZ Nov/24", start: 52, end: 67 },
+            { name: "VIAGENS - GRAMADO Out/25", start: 68, end: 83 },
+            { name: "VIAGENS - GRAMADO Fev/25", start: 84, end: 131 },
+            { name: "VIAGENS - FOZ Fev/26", start: 132, end: 147 },
 
             { name: "MOMENTOS", start: 148, end: 181 },
-            { name: "PAPI", start: 182, end: 209 },
-            { name: "ENCERRAMENTO", start: 210, end: 210 }
+            { name: "PAPI", start: 182, end: 195 },
+            { name: "LENDAS", start: 196, end: 209 },
+            { name: "ESPECIAL 210", start: 210, end: 210 }
         ];
 
         function getSection() {
@@ -454,7 +467,7 @@
         function openReset() {
             targetRemove = "reset";
 
-            document.getElementById("word").placeholder = "Digite: REINICIAR";
+            document.getElementById("word").placeholder = "Digite em maiúsculo: REINICIAR";
             document.getElementById("overlay").style.display = "flex";
 
             document.getElementById("senha").value = "";
@@ -504,7 +517,7 @@
                 }
 
                 if (word !== "REMOVER") {
-                    msg.innerText = "Digite REMOVER para confirmar.";
+                    msg.innerText = "Digite em maiúsculo: REMOVER para confirmar.";
                     return;
                 }
 
@@ -577,7 +590,7 @@
                         targetRemove = i;
 
                         document.getElementById("word").placeholder =
-                            "Digite: REMOVER";
+                            "Digite em maiúsculo: REMOVER";
 
                         document.getElementById("overlay").style.display = "flex";
                     }
