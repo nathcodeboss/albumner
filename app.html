@@ -71,8 +71,25 @@
             color: var(--creme);
             text-align: center;
             padding: 28px;
-            border-bottom-left-radius: 40px;
-            border-bottom-right-radius: 40px;
+        }
+
+        .header {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* faixa verde reta atrás/embaixo */
+        .header::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -10px;
+            /* distância pra ficar “abaixo” */
+            height: 10px;
+            /* espessura da faixa */
+            background: var(--verde);
+            z-index: -1;
         }
 
         .container {
@@ -191,6 +208,15 @@
 
         /* MODAL */
         #overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.35);
+        }
+
+        #rewardOverlay {
             position: fixed;
             inset: 0;
             display: none;
@@ -342,8 +368,8 @@
             <h2>Adicionar Figurinha</h2>
 
             <div class="input-box">
-                <input id="input" maxlength="3" placeholder="001" inputmode="numeric" pattern="[0-9]*"> <button
-                    onclick="add()">Adicionar</button>
+                <input id="input" maxlength="3" placeholder="Digite o número da figurinha" inputmode="numeric"
+                    pattern="[0-9]*"> <button onclick="add()">Adicionar</button>
             </div>
 
             <div id="addMsg" style="margin-top:10px; min-height:20px;"></div>
@@ -401,20 +427,21 @@
 
     <script>
 
-        const TOTAL = 210;
+        const TOTAL = 211;
 
         let album = new Set(JSON.parse(localStorage.getItem("album")) || []);
         let currentSection = 0;
         let targetRemove = null;
 
         const sections = [
+            { name: "QR CODE 000", start: 0, end: 0 },
             { name: "ESPECIAL 001", start: 1, end: 1 },
             { name: "FAMÍLIA", start: 2, end: 51 },
 
-            { name: "VIAGENS - FOZ Nov/24", start: 52, end: 67 },
-            { name: "VIAGENS - GRAMADO Out/25", start: 68, end: 83 },
-            { name: "VIAGENS - GRAMADO Fev/25", start: 84, end: 131 },
-            { name: "VIAGENS - FOZ Fev/26", start: 132, end: 147 },
+            { name: "VIAGENS - FOZ NOV/24", start: 52, end: 67 },
+            { name: "VIAGENS - GRAMADO OUT/25", start: 68, end: 83 },
+            { name: "VIAGENS - GRAMADO FEV/25", start: 84, end: 131 },
+            { name: "VIAGENS - FOZ FEV/26", start: 132, end: 147 },
 
             { name: "MOMENTOS", start: 148, end: 181 },
             { name: "PAPI", start: 182, end: 195 },
@@ -436,13 +463,13 @@
             const input = document.getElementById("input");
             const msg = document.getElementById("addMsg");
 
-            const n = parseInt(input.value.replace(/^0+/, ""));
+            const n = parseInt(input.value, 10);
 
             msg.innerText = "";
 
-            if (isNaN(n) || n < 1 || n > TOTAL) {
+            if (isNaN(n) || n < 0 || n > TOTAL - 1) {
                 msg.style.color = "#d62828";
-                msg.innerText = `Número inválido. Informe entre 001 e ${String(TOTAL).padStart(3, "0")}.`; return;
+                msg.innerText = `Número inválido. Informe entre 000 e ${String(TOTAL - 1).padStart(3, "0")}.`; return;
             }
 
             if (album.has(n)) {
@@ -467,7 +494,7 @@
         function openReset() {
             targetRemove = "reset";
 
-            document.getElementById("word").placeholder = "Digite em maiúsculo: REINICIAR";
+            document.getElementById("word").placeholder = "Digite: REINICIAR";
             document.getElementById("overlay").style.display = "flex";
 
             document.getElementById("senha").value = "";
@@ -590,7 +617,7 @@
                         targetRemove = i;
 
                         document.getElementById("word").placeholder =
-                            "Digite em maiúsculo: REMOVER";
+                            "Digite: REMOVER";
 
                         document.getElementById("overlay").style.display = "flex";
                     }
@@ -622,6 +649,12 @@
                 `${title} (${done}/${total})`;
         }
 
+        document.getElementById("input").addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                add();
+            }
+        });
+        
     </script>
 
 </body>
