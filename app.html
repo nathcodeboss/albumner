@@ -304,6 +304,59 @@
             box-shadow: none;
         }
 
+
+        /* RECOMPENSA ÁLBUM COMPLETO */
+
+        .reward-modal {
+            background: white;
+            width: 90%;
+            max-width: 360px;
+            padding: 25px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 8px 0 var(--azul2);
+
+            animation: aparecer .4s ease;
+        }
+
+        .reward-modal h2 {
+            color: var(--azul);
+            margin-bottom: 15px;
+        }
+
+        .reward-modal p {
+            margin-top: 12px;
+            line-height: 1.5;
+            font-size: 15px;
+        }
+
+        .reward-modal button {
+            margin-top: 20px;
+            width: 100%;
+            background: var(--verde2);
+        }
+
+        .reward-icon {
+            font-size: 55px;
+            margin-bottom: 10px;
+        }
+
+
+        @keyframes aparecer {
+
+            from {
+                transform: scale(.7);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+        }
+
+
         .btn-confirm {
             background: var(--verde2);
             color: white;
@@ -371,6 +424,20 @@
                 height: 42px;
             }
         }
+
+
+        .progress-info {
+            margin-top: 12px;
+            padding: 12px;
+            background: var(--creme);
+            border-radius: 15px;
+        }
+
+        #motivation {
+            margin-top: 15px;
+            color: var(--verde2);
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -405,6 +472,14 @@
 
             <div class="info" id="count"></div>
             <div class="info" id="percent"></div>
+
+            <div class="info" id="remaining"></div>
+            <div class="info" id="lastSticker"></div>
+            <div class="info" id="startDate"></div>
+            <div class="info" id="days"></div>
+            <div class="info" id="chapters"></div>
+
+            <div class="info" id="motivation"></div>
         </div>
 
         <!-- TABLE -->
@@ -458,6 +533,36 @@
         </div>
     </div>
 
+    <!-- MODAL DE ÁLBUM COMPLETO -->
+    <div id="rewardOverlay">
+
+        <div class="reward-modal">
+
+            <div class="reward-icon">
+                🏆
+            </div>
+
+            <h2>ÁLBUM COMPLETO!</h2>
+
+            <p>
+                Parabéns! Você conseguiu reunir todas as
+                <strong>211 figurinhas</strong>.
+            </p>
+
+            <p>
+                Essa coleção representa momentos,
+                histórias e lembranças especiais
+                que agora fazem parte da sua jornada.
+            </p>
+
+            <button onclick="closeReward()">
+                Missão cumprida!
+            </button>
+
+        </div>
+
+    </div>
+
     <script>
 
         const TOTAL = 211;
@@ -469,15 +574,15 @@
         const sections = [
             { name: "QR CODE 000", start: 0, end: 0 },
             { name: "ESPECIAL 001", start: 1, end: 1 },
-            { name: "FAMÍLIA", start: 2, end: 51 },
+            { name: "FAMÍLIA", start: 2, end: 50 },
 
-            { name: "VIAGENS:FOZ NOV/24", start: 52, end: 67 },
-            { name: "VIAGENS: GRAMADO OUT/25", start: 68, end: 83 },
-            { name: "VIAGENS:GRAMADO FEV/25", start: 84, end: 131 },
-            { name: "VIAGENS:FOZ FEV/26", start: 132, end: 147 },
+            { name: "VIAGENS: FOZ NOV/24", start: 51, end: 66 },
+            { name: "VIAGENS: GRAMADO OUT/25", start: 67, end: 83 },
+            { name: "VIAGENS: GRAMADO FEV/25", start: 84, end: 131 },
+            { name: "VIAGENS: FOZ FEV/26", start: 132, end: 147 },
 
-            { name: "MOMENTOS", start: 148, end: 181 },
-            { name: "PAPI", start: 182, end: 195 },
+            { name: "MOMENTOS", start: 148, end: 163 },
+            { name: "PAPI", start: 164, end: 195 },
             { name: "LENDAS", start: 196, end: 209 },
             { name: "ESPECIAL 210", start: 210, end: 210 }
         ];
@@ -488,6 +593,119 @@
 
         function save() {
             localStorage.setItem("album", JSON.stringify([...album]));
+        }
+
+        function saveStartDate() {
+
+            if (!localStorage.getItem("inicioAlbum")) {
+
+                localStorage.setItem(
+                    "inicioAlbum",
+                    new Date().toISOString()
+                );
+
+            }
+
+        }
+
+
+        function formatDate(date) {
+
+            return date.toLocaleDateString("pt-BR");
+
+        }
+
+
+        function getDays() {
+
+            const start = localStorage.getItem("inicioAlbum");
+
+            if (!start) return 0;
+
+            const inicio = new Date(start);
+            const hoje = new Date();
+
+            const diff = hoje - inicio;
+
+            return Math.floor(diff / (1000 * 60 * 60 * 24));
+
+        }
+
+
+        function getCompleteSections() {
+
+            let complete = 0;
+
+            sections.forEach(section => {
+
+                let total = 0;
+                let done = 0;
+
+
+                for (let i = section.start; i <= section.end; i++) {
+
+                    total++;
+
+                    if (album.has(i)) {
+                        done++;
+                    }
+
+                }
+
+
+                if (total === done) {
+                    complete++;
+                }
+
+
+            });
+
+
+            return complete;
+
+        }
+
+
+        function getMotivation(percent) {
+
+            if (percent === 100)
+                return "🏆 Álbum completo! Uma coleção cheia de histórias.";
+
+            if (percent >= 75)
+                return "🔥 Está quase lá! Faltam poucas figurinhas.";
+
+            if (percent >= 50)
+                return "🚀 Você já passou da metade da jornada.";
+
+            if (percent >= 25)
+                return "⭐ Sua coleção está começando a ganhar vida.";
+
+            return "🌱 Toda grande coleção começa com a primeira figurinha.";
+
+        }
+
+        function verificarConclusao() {
+
+            if (album.size === TOTAL) {
+
+                if (localStorage.getItem("albumCompleto") !== "true") {
+
+                    localStorage.setItem("albumCompleto", "true");
+
+                    document.getElementById("rewardOverlay")
+                        .style.display = "flex";
+                }
+
+            }
+
+        }
+
+
+        function closeReward() {
+
+            document.getElementById("rewardOverlay")
+                .style.display = "none";
+
         }
 
         /* ADD */
@@ -514,11 +732,20 @@
 
             album.add(n);
 
+            saveStartDate();
+
+            localStorage.setItem(
+                "ultimaFigurinha",
+                String(n).padStart(3, "0")
+            );
+
             msg.style.color = "#2a9d42";
             msg.innerText = `Figurinha ${String(n).padStart(3, "0")} cadastrada com sucesso!`;
 
             save();
             update();
+
+            verificarConclusao();
 
             input.value = "";
         }
@@ -609,17 +836,57 @@
 
             const percent = Math.round((album.size / TOTAL) * 100);
 
+            const remaining = TOTAL - album.size;
+
             document.getElementById("count").innerText =
-                `${album.size} / ${TOTAL}`;
+                `📖 Figurinhas coletadas: ${album.size} / ${TOTAL}`;
+
 
             document.getElementById("percent").innerText =
-                percent + "% completo";
+                `📊 Progresso: ${percent}%`;
+
+
+            document.getElementById("remaining").innerText =
+                remaining > 0
+                    ? `⏳ Faltam ${remaining} figurinhas`
+                    : `🏆 Nenhuma figurinha faltando!`;
+
+
+            const last = localStorage.getItem("ultimaFigurinha");
+
+            document.getElementById("lastSticker").innerText =
+                last
+                    ? `⭐ Última adicionada: ${last}`
+                    : `⭐ Nenhuma figurinha adicionada ainda`;
+
+
+            const start = localStorage.getItem("inicioAlbum");
+
+            document.getElementById("startDate").innerText =
+                start
+                    ? `📅 Coleção iniciada em: ${formatDate(new Date(start))}`
+                    : "";
+
+
+            document.getElementById("days").innerText =
+                `🕒 Dias colecionando: ${getDays()}`;
+
+
+            document.getElementById("chapters").innerText =
+                `📚 Capítulos completos: ${getCompleteSections()} / ${sections.length}`;
+
+
+            document.getElementById("motivation").innerText =
+                getMotivation(percent);
+
 
             document.getElementById("bar").style.width =
                 percent + "%";
 
+
             render();
             updateSectionProgress();
+
         }
 
         /* TABLE */
